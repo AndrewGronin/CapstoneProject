@@ -47,7 +47,7 @@ namespace CapstoneProject.Schema.Mutations
             return response;
         }
 
-        public void RevokeToken(
+        public string RevokeToken(
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
             RevokeTokenRequest model)
@@ -62,6 +62,8 @@ namespace CapstoneProject.Schema.Mutations
 
             if (!response)
                 throw new ResourceNotFoundException("Token not found");
+
+            return "Revoked";
         }
         
         private void SetTokenCookie(HttpContext? context, string token)
