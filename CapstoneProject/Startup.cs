@@ -1,3 +1,4 @@
+using CapstoneProject.Schema.Mutations;
 using CapstoneProject.Schema.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,9 @@ namespace CapstoneProject
             services
                 .AddGraphQLServer()
                 .AddQueryType<RootQuery>()
-                .AddTypeExtension<AuthorizationQuery>();
+                .AddMutationType<RootMutation>()
+                .AddTypeExtension<AuthorizationQuery>()
+                .AddTypeExtension<AuthorizationMutation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
