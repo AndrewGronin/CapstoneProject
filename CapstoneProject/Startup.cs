@@ -1,11 +1,14 @@
 using CapstoneProject.Schema.Mutations;
 using CapstoneProject.Schema.Queries;
+using CapstoneProject.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApi.Helpers;
 
 namespace CapstoneProject
 {
@@ -29,6 +32,13 @@ namespace CapstoneProject
                 .AddTypeExtension<AuthorizationMutation>();
             
             services.AddHttpContextAccessor();
+            
+            services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
+            
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            services.AddScoped<IUserService, UserService>();
 
         }
 
