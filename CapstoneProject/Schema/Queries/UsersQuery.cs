@@ -23,7 +23,7 @@ namespace CapstoneProject.Schema.Queries
 
         public IEnumerable<RefreshToken> GetRefreshTokens([Service] IUserService userService, int userId)
         {
-            var user = userService.GetById(userId);
+            var user = userService.GetByIds(new []{userId}).Single();
             if (user == null) 
                 throw new ResourceNotFoundException($"User with id = {userId} wasn't found");
 

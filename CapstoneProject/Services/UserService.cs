@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using CapstoneProject.Model.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Helpers;
@@ -21,9 +22,6 @@ namespace CapstoneProject.Services
         bool RevokeToken(string token, string ipAddress);
         IEnumerable<User> GetAll();
         IEnumerable<User> GetByIds(IEnumerable<int> ids);
-        
-        User GetById(int id);
-
     }
     
     public class UserService : IUserService
@@ -123,18 +121,16 @@ namespace CapstoneProject.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _context.Users.Include(user => user.RefreshTokens);
         }
 
         public IEnumerable<User> GetByIds(IEnumerable<int> ids)
         {
-            return _context.Users.Where(u=> ids.Contains(u.Id));
+            if (ids.Count() >= 2100)
+                throw new InvalidClientRequestException("Ids length mustn't surpass 2100");
+            return _context.Users.Include(user => user.RefreshTokens).Where(u=> ids.Contains(u.Id));
         }
-
-        public User GetById(int id)
-        {
-            return _context.Users.Find(id);
-        }
+        
         // helper methods
 
         private string generateJwtToken(User user)
