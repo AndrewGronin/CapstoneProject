@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using CapstoneProject;
+using CapstoneProject.Model.Entities;
 
 namespace WebApi.Models
 {

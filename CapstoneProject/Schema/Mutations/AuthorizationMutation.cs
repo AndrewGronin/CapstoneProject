@@ -1,11 +1,13 @@
 ﻿using System;
 using CapstoneProject.Exceptions;
+using CapstoneProject.Model.Entities;
 using CapstoneProject.Services;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using WebApi.Models;
+using User = CapstoneProject.Schema.Queries.User;
 
 namespace CapstoneProject.Schema.Mutations
 {
@@ -16,7 +18,7 @@ namespace CapstoneProject.Schema.Mutations
             [Service] IUserService userService
         )
         {
-            return userService.Create();
+            return User.FromModel(userService.Create());
         }
         public AuthenticateResponse Authenticate(
             [Service]IHttpContextAccessor contextAccessor,

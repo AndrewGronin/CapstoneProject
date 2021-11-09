@@ -28,7 +28,7 @@ namespace CapstoneProject
                 .AddGraphQLServer()
                 .AddQueryType<RootQuery>()
                 .AddMutationType<RootMutation>()
-                .AddTypeExtension<AuthorizationQuery>()
+                .AddTypeExtension<UsersQuery>()
                 .AddTypeExtension<AuthorizationMutation>();
             
             services.AddHttpContextAccessor();

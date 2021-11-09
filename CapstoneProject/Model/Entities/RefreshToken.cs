@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 #nullable disable
 
-namespace CapstoneProject
+namespace CapstoneProject.Model.Entities
 {
     public partial class RefreshToken
     {

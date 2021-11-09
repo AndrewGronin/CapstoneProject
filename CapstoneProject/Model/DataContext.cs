@@ -1,6 +1,5 @@
-﻿using System;
+﻿using CapstoneProject.Model.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 

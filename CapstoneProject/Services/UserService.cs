@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CapstoneProject.Model.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Helpers;
@@ -19,7 +20,10 @@ namespace CapstoneProject.Services
         AuthenticateResponse RefreshToken(string token, string ipAddress);
         bool RevokeToken(string token, string ipAddress);
         IEnumerable<User> GetAll();
+        IEnumerable<User> GetByIds(IEnumerable<int> ids);
+        
         User GetById(int id);
+
     }
     
     public class UserService : IUserService
@@ -122,11 +126,15 @@ namespace CapstoneProject.Services
             return _context.Users;
         }
 
+        public IEnumerable<User> GetByIds(IEnumerable<int> ids)
+        {
+            return _context.Users.Where(u=> ids.Contains(u.Id));
+        }
+
         public User GetById(int id)
         {
             return _context.Users.Find(id);
         }
-
         // helper methods
 
         private string generateJwtToken(User user)
