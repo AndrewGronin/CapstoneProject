@@ -1,4 +1,4 @@
-namespace WebApi.Helpers
+namespace CapstoneProject
 {
     public class AppSettings
     {

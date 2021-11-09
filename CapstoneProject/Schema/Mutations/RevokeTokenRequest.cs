@@ -1,4 +1,4 @@
-namespace WebApi.Models
+namespace CapstoneProject.Schema.Mutations
 {
     public class RevokeTokenRequest
     {

@@ -1,12 +1,8 @@
 ﻿using System;
-using CapstoneProject.Exceptions;
-using CapstoneProject.Model.Entities;
 using CapstoneProject.Services;
 using HotChocolate;
-using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
-using WebApi.Models;
 using User = CapstoneProject.Schema.Queries.User;
 
 namespace CapstoneProject.Schema.Mutations
@@ -15,11 +11,13 @@ namespace CapstoneProject.Schema.Mutations
     public class AuthorizationMutation
     {
         public User Register(
-            [Service] IUserService userService
+            [Service] IUserService userService,
+            User inputUser
         )
         {
-            return User.FromModel(userService.Create());
+            return User.FromModel(userService.Create(inputUser.ToModel()));
         }
+        
         public AuthenticateResponse Authenticate(
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
@@ -27,9 +25,6 @@ namespace CapstoneProject.Schema.Mutations
             )
         {
             var response = userService.Authenticate(authenticateRequest, GetIpAddress(contextAccessor.HttpContext));
-
-            if (response == null)
-                throw new InvalidClientRequestException("Username or password is incorrect");
 
             SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
 
@@ -47,9 +42,6 @@ namespace CapstoneProject.Schema.Mutations
             
             var response = userService.RefreshToken(refreshToken, GetIpAddress(contextAccessor.HttpContext));
 
-            /*if (response == null)
-                return Unauthorized(new { message = "Invalid token" });*/
-
             SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
 
             return response;
@@ -66,10 +58,7 @@ namespace CapstoneProject.Schema.Mutations
             if (string.IsNullOrEmpty(token))
                 throw new InvalidClientRequestException("Token is required");
 
-            var response = userService.RevokeToken(token, GetIpAddress(contextAccessor.HttpContext));
-
-            if (!response)
-                throw new ResourceNotFoundException("Token not found");
+            userService.RevokeToken(token, GetIpAddress(contextAccessor.HttpContext));
 
             return "Revoked";
         }

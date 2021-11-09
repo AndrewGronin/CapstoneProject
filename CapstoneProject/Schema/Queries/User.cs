@@ -29,5 +29,17 @@ namespace CapstoneProject.Schema.Queries
                 PasswordHash = model.PasswordHash
             };
         }
+        
+        public Model.Entities.User ToModel()
+        {
+            return new Model.Entities.User()
+            {
+                Id = Id,
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                PasswordHash = PasswordHash
+            };
+        }
     }
 }

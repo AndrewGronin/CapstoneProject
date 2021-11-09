@@ -6,20 +6,20 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using CapstoneProject.Model.Entities;
+using CapstoneProject.Model.Exceptions;
+using CapstoneProject.Schema.Mutations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using WebApi.Helpers;
-using WebApi.Models;
 
 namespace CapstoneProject.Services
 {
     public interface IUserService
     {
-        User Create();
+        User Create(User user);
         AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
         AuthenticateResponse RefreshToken(string token, string ipAddress);
-        bool RevokeToken(string token, string ipAddress);
+        void RevokeToken(string token, string ipAddress);
         IEnumerable<User> GetAll();
         IEnumerable<User> GetByIds(IEnumerable<int> ids);
     }
@@ -37,27 +37,21 @@ namespace CapstoneProject.Services
             _appSettings = appSettings.Value;
         }
 
-        public User Create()
+        public User Create(User user)
         {
-            var a = new User()
-            {
-                FirstName = "aaaaaaa",
-                LastName = "bbbbbbbb",
-                Email = "CCCCCCCC",
-                PasswordHash = "ssssdsad"
-
-            };
-            _context.Users.Add(a);
+            _context.Users.Add(user);
             _context.SaveChanges();
-            return a;
+            return user;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var user =  _context.Users.SingleOrDefault(x => x.Email == model.Username && x.PasswordHash == model.Password);
+            //TODO: hashes
+            var user =  _context.Users.SingleOrDefault(x => x.Email == model.Email && x.PasswordHash == model.Password);
 
             // return null if user not found
-            if (user == null) return null;
+            if (user == null) 
+                throw new InvalidClientRequestException("Login or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = generateJwtToken(user);
@@ -68,7 +62,7 @@ namespace CapstoneProject.Services
             _context.Update(user);
             _context.SaveChanges();
 
-            return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
+            return new AuthenticateResponse(jwtToken, refreshToken.Token);
         }
 
         public AuthenticateResponse RefreshToken(string token, string ipAddress)
@@ -76,12 +70,14 @@ namespace CapstoneProject.Services
             var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
             
             // return null if no user found with token
-            if (user == null) return null;
+            if (user == null) 
+                throw new RefreshTokenException("No Refresh token found");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             // return null if token is no longer active
-            if (!refreshToken.IsActive) return null;
+            if (!refreshToken.IsActive) 
+                throw new RefreshTokenException("Token isnot active");
 
             // replace old refresh token with a new one and save
             var newRefreshToken = generateRefreshToken(ipAddress);
@@ -95,28 +91,28 @@ namespace CapstoneProject.Services
             // generate new jwt
             var jwtToken = generateJwtToken(user);
 
-            return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
+            return new AuthenticateResponse(jwtToken, newRefreshToken.Token);
         }
 
-        public bool RevokeToken(string token, string ipAddress)
+        public void RevokeToken(string token, string ipAddress)
         {
             var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
             
             // return false if no user found with token
-            if (user == null) return false;
+            if (user == null)
+                throw new RefreshTokenException("No Refresh token found");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             // return false if token is not active
-            if (!refreshToken.IsActive) return false;
+            if (!refreshToken.IsActive) 
+                throw new RefreshTokenException("Token is not active");
 
             // revoke token and save
             refreshToken.RevocationDateTime = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _context.Update(user);
             _context.SaveChanges();
-
-            return true;
         }
 
         public IEnumerable<User> GetAll()
