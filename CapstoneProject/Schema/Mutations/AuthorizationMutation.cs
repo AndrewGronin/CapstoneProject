@@ -12,6 +12,12 @@ namespace CapstoneProject.Schema.Mutations
     [ExtendObjectType(typeof(RootMutation))]
     public class AuthorizationMutation
     {
+        public User Register(
+            [Service] IUserService userService
+        )
+        {
+            return userService.Create();
+        }
         public AuthenticateResponse Authenticate(
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,

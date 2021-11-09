@@ -14,6 +14,7 @@ namespace CapstoneProject.Services
 {
     public interface IUserService
     {
+        User Create();
         AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
         AuthenticateResponse RefreshToken(string token, string ipAddress);
         bool RevokeToken(string token, string ipAddress);
@@ -32,6 +33,21 @@ namespace CapstoneProject.Services
         {
             _context = context;
             _appSettings = appSettings.Value;
+        }
+
+        public User Create()
+        {
+            var a = new User()
+            {
+                FirstName = "aaaaaaa",
+                LastName = "bbbbbbbb",
+                Email = "CCCCCCCC",
+                PasswordHash = "ssssdsad"
+
+            };
+            _context.Users.Add(a);
+            _context.SaveChanges();
+            return a;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)

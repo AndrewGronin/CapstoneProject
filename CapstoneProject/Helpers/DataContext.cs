@@ -61,18 +61,16 @@ namespace CapstoneProject
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
+                entity.HasKey(e => e.Id)
+                    .HasName("Users_pk")
+                    .IsClustered(false);
                 entity.Property(e => e.Email).HasMaxLength(100);
 
                 entity.Property(e => e.FirstName).HasMaxLength(100);
 
                 entity.Property(e => e.LastName).HasMaxLength(100);
             });
-
-            //OnModelCreatingPartial(modelBuilder);
         }
 
-        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
