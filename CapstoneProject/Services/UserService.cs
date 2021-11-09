@@ -7,7 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using WebApi.Entities;
 using WebApi.Helpers;
 using WebApi.Models;
 
@@ -37,7 +36,7 @@ namespace CapstoneProject.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var user =  _context.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user =  _context.Users.SingleOrDefault(x => x.Email == model.Username && x.PasswordHash == model.Password);
 
             // return null if user not found
             if (user == null) return null;
@@ -68,7 +67,7 @@ namespace CapstoneProject.Services
 
             // replace old refresh token with a new one and save
             var newRefreshToken = generateRefreshToken(ipAddress);
-            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevocationDateTime = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(newRefreshToken);
@@ -94,7 +93,7 @@ namespace CapstoneProject.Services
             if (!refreshToken.IsActive) return false;
 
             // revoke token and save
-            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevocationDateTime = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _context.Update(user);
             _context.SaveChanges();
@@ -140,8 +139,8 @@ namespace CapstoneProject.Services
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    Created = DateTime.UtcNow,
+                    ExpirationDateTime = DateTime.UtcNow.AddDays(7),
+                    CreationDate = DateTime.UtcNow,
                     CreatedByIp = ipAddress
                 };
             }

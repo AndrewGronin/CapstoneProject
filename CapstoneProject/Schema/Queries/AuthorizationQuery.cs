@@ -3,7 +3,6 @@ using CapstoneProject.Exceptions;
 using CapstoneProject.Services;
 using HotChocolate;
 using HotChocolate.Types;
-using WebApi.Entities;
 
 namespace CapstoneProject.Schema.Queries
 {
