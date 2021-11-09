@@ -121,14 +121,14 @@ namespace CapstoneProject.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(user => user.RefreshTokens);
+            return _context.Users;
         }
 
         public IEnumerable<User> GetByIds(IEnumerable<int> ids)
         {
             if (ids.Count() >= 2100)
                 throw new InvalidClientRequestException("Ids length mustn't surpass 2100");
-            return _context.Users.Include(user => user.RefreshTokens).Where(u=> ids.Contains(u.Id));
+            return _context.Users.Where(u=> ids.Contains(u.Id));
         }
         
         // helper methods
