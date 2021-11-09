@@ -1,5 +1,6 @@
 ﻿using System;
-using CapstoneProject.Services;
+using CapstoneProject.Model.Exceptions;
+using CapstoneProject.Schema.Services;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;

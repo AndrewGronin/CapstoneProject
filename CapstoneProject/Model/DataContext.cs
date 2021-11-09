@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
-namespace CapstoneProject
+namespace CapstoneProject.Model
 {
     public class DataContext : DbContext
     {

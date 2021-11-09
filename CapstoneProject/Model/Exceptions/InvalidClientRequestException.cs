@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CapstoneProject
+namespace CapstoneProject.Model.Exceptions
 {
     public class InvalidClientRequestException : Exception
     {

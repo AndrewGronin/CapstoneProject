@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CapstoneProject.Exceptions
+namespace CapstoneProject.Model.Exceptions
 {
     public class ResourceNotFoundException : Exception
     {

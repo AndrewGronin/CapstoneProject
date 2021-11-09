@@ -5,14 +5,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CapstoneProject.Model;
 using CapstoneProject.Model.Entities;
 using CapstoneProject.Model.Exceptions;
 using CapstoneProject.Schema.Mutations;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CapstoneProject.Services
+namespace CapstoneProject.Schema.Services
 {
     public interface IUserService
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CapstoneProject.Exceptions;
 using CapstoneProject.Model.Entities;
-using CapstoneProject.Services;
+using CapstoneProject.Model.Exceptions;
+using CapstoneProject.Schema.Services;
 using HotChocolate;
 using HotChocolate.Types;
 

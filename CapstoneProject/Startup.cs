@@ -1,6 +1,7 @@
+using CapstoneProject.Model;
 using CapstoneProject.Schema.Mutations;
 using CapstoneProject.Schema.Queries;
-using CapstoneProject.Services;
+using CapstoneProject.Schema.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
