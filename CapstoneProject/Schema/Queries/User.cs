@@ -30,6 +30,7 @@ namespace CapstoneProject.Schema.Queries
             };
         }
         
+        [GraphQLIgnore]
         public Model.Entities.User ToModel()
         {
             return new Model.Entities.User()

@@ -2,6 +2,7 @@
 using CapstoneProject.Model.Exceptions;
 using CapstoneProject.Schema.Services;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using User = CapstoneProject.Schema.Queries.User;
@@ -48,6 +49,7 @@ namespace CapstoneProject.Schema.Mutations
             return response;
         }
 
+        [Authorize]
         public string RevokeToken(
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,

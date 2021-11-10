@@ -4,13 +4,15 @@ using CapstoneProject.Model.Entities;
 using CapstoneProject.Model.Exceptions;
 using CapstoneProject.Schema.Services;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 
 namespace CapstoneProject.Schema.Queries
 {
+    [Authorize]
     [ExtendObjectType(typeof(RootQuery))]
     public class UsersQuery
-    {
+    { 
         public IEnumerable<User> Users(
             [Service] IUserService userService,
             List<int>? ids)
