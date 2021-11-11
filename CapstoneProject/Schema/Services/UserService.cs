@@ -40,6 +40,9 @@ namespace CapstoneProject.Schema.Services
 
         public User Create(User user)
         {
+            if (_context.Users.SingleOrDefault(u => u.Email == user.Email) != null)
+                throw new InvalidClientRequestException($"User with Email {user.Email} is already presented");
+                
             _context.Users.Add(user);
             _context.SaveChanges();
             return user;
