@@ -7,7 +7,6 @@ namespace CapstoneProject.Schema.Queries
     {
         public int Id { get; set; }
         
-        [GraphQLNonNullType]
         public string FirstName { get; set; }
         
         public string LastName { get; set; }
@@ -27,19 +26,6 @@ namespace CapstoneProject.Schema.Queries
                 LastName = model.LastName,
                 Email = model.Email,
                 PasswordHash = model.PasswordHash
-            };
-        }
-        
-        [GraphQLIgnore]
-        public Model.Entities.User ToModel()
-        {
-            return new Model.Entities.User()
-            {
-                Id = Id,
-                FirstName = FirstName,
-                LastName = LastName,
-                Email = Email,
-                PasswordHash = PasswordHash
             };
         }
     }

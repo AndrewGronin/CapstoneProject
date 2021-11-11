@@ -1,5 +1,6 @@
 ﻿using System;
 using CapstoneProject.Model.Exceptions;
+using CapstoneProject.Schema.Mutations.inputObjects;
 using CapstoneProject.Schema.Services;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace CapstoneProject.Schema.Mutations
     {
         public User Register(
             [Service] IUserService userService,
-            User inputUser
+            InputUser inputUser
         )
         {
             return User.FromModel(userService.Create(inputUser.ToModel()));
@@ -35,12 +36,13 @@ namespace CapstoneProject.Schema.Mutations
         
         public AuthenticateResponse RefreshToken(
             [Service]IHttpContextAccessor contextAccessor,
-            [Service]IUserService userService)
+            [Service]IUserService userService,
+            string refreshToken)
         {
-            var refreshToken = contextAccessor.HttpContext?.Request.Cookies["refreshToken"];
+            //var refreshToken = contextAccessor.HttpContext?.Request.Cookies["refreshToken"];
             
-            if (string.IsNullOrEmpty(refreshToken))
-                throw new InvalidClientRequestException("RefreshToken is required");
+            /*if (string.IsNullOrEmpty(refreshToken))
+                throw new InvalidClientRequestException("RefreshToken is required");*/
             
             var response = userService.RefreshToken(refreshToken, GetIpAddress(contextAccessor.HttpContext));
 
