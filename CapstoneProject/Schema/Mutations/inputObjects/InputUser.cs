@@ -1,4 +1,5 @@
-﻿using HotChocolate;
+﻿using CapstoneProject.Infrastructure;
+using HotChocolate;
 
 namespace CapstoneProject.Schema.Mutations.inputObjects
 {
@@ -22,7 +23,7 @@ namespace CapstoneProject.Schema.Mutations.inputObjects
                 FirstName = FirstName,
                 LastName = LastName,
                 Email = Email,
-                PasswordHash = Password
+                PasswordHash = Hasher.Hash(Password)
             };
         }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CapstoneProject.Infrastructure;
 using CapstoneProject.Model;
 using CapstoneProject.Model.Entities;
 using CapstoneProject.Model.Exceptions;
@@ -46,8 +47,8 @@ namespace CapstoneProject.Schema.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            //TODO: hashes
-            var user =  _context.Users.SingleOrDefault(x => x.Email == model.Email && x.PasswordHash == model.Password);
+            var hashedPassword = Hasher.Hash(model.Password);
+            var user =  _context.Users.SingleOrDefault(x => x.Email == model.Email && x.PasswordHash == hashedPassword);
 
             // return null if user not found
             if (user == null) 
