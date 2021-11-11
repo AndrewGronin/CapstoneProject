@@ -1,13 +1,15 @@
+#nullable disable
 using System.ComponentModel.DataAnnotations;
+using HotChocolate;
 
 namespace CapstoneProject.Schema.Mutations
 {
     public class AuthenticateRequest
     {
-        [Required]
+        [GraphQLNonNullType]
         public string Email { get; set; }
 
-        [Required]
+        [GraphQLNonNullType]
         public string Password { get; set; }
     }
 }

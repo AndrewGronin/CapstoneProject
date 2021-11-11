@@ -1,3 +1,4 @@
+#nullable disable
 namespace CapstoneProject
 {
     public class AppSettings

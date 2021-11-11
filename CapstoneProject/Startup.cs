@@ -66,7 +66,10 @@ namespace CapstoneProject
 
             services.AddHttpContextAccessor();
             
-            services.AddDbContext<DataContext>();
+            services.AddDbContext<DataContext>(options => 
+                options
+                    .UseSqlServer(appSettingsSection.GetSection("ConnectionString").Value)
+                    .UseLazyLoadingProxies());
             
             
 

@@ -1,10 +1,14 @@
-﻿using System;
+﻿#nullable disable
+using System;
+using HotChocolate;
 
 namespace CapstoneProject.Schema.Queries
 {
     public class RefreshToken
     {
         public int Id { get; set; }
+        
+        [GraphQLNonNullType]
         public string Token { get; set; }
         public DateTime ExpirationDateTime { get; set; }
 
