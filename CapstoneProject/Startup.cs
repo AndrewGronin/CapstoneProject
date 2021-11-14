@@ -1,14 +1,13 @@
 using System;
 using System.Text;
+using CapstoneProject.Infrastructure;
 using CapstoneProject.Model;
 using CapstoneProject.Schema.Mutations;
 using CapstoneProject.Schema.Queries;
 using CapstoneProject.Schema.Services;
-using HotChocolate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,20 +48,20 @@ namespace CapstoneProject
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                         ClockSkew = TimeSpan.Zero
                     };
                 });
 
             services.AddAuthorization();
-            
+
             services
                 .AddGraphQLServer()
                 .AddQueryType<RootQuery>()
                 .AddMutationType<RootMutation>()
                 .AddTypeExtension<UsersQuery>()
                 .AddTypeExtension<AuthorizationMutation>()
-                .AddAuthorization();
+                .AddAuthorization()
+                .AddErrorFilter<SimpleErrorFilter>();
 
             services.AddHttpContextAccessor();
             
@@ -75,8 +74,6 @@ namespace CapstoneProject
 
             services.AddScoped<IUserService, UserService>();
             services.AddCors();
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CapstoneProject.Model.Entities;
 using CapstoneProject.Model.Exceptions;
 using CapstoneProject.Schema.Services;
 using HotChocolate;
@@ -9,10 +8,10 @@ using HotChocolate.Types;
 
 namespace CapstoneProject.Schema.Queries
 {
-    [Authorize]
     [ExtendObjectType(typeof(RootQuery))]
     public class UsersQuery
     { 
+        [Authorize]
         public IEnumerable<User> Users(
             [Service] IUserService userService,
             List<int>? ids)
@@ -23,6 +22,7 @@ namespace CapstoneProject.Schema.Queries
             return modelUsers.Select(User.FromModel);
         }
 
+        [Authorize]
         public IEnumerable<RefreshToken> GetRefreshTokens([Service] IUserService userService, int userId)
         {
             var user = userService.GetByIds(new []{userId}).Single();

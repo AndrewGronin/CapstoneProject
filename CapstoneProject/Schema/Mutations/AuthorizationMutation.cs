@@ -1,9 +1,10 @@
 ﻿using System;
-using CapstoneProject.Model.Exceptions;
+using CapstoneProject.Schema.Infrastructure;
 using CapstoneProject.Schema.Mutations.inputObjects;
 using CapstoneProject.Schema.Services;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using User = CapstoneProject.Schema.Queries.User;
@@ -22,19 +23,21 @@ namespace CapstoneProject.Schema.Mutations
         }
         
         public AuthenticateResponse Authenticate(
+            IResolverContext resolverContext,
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
             AuthenticateRequest authenticateRequest
             )
         {
-            var response = userService.Authenticate(authenticateRequest, GetIpAddress(contextAccessor.HttpContext));
+            var response = userService.Authenticate(authenticateRequest, resolverContext.GetIpAddress(contextAccessor.HttpContext));
 
-            SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
+            resolverContext.SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
 
             return response;
         }
         
         public AuthenticateResponse RefreshToken(
+            IResolverContext resolverContext,
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
             string refreshToken)
@@ -44,15 +47,16 @@ namespace CapstoneProject.Schema.Mutations
             /*if (string.IsNullOrEmpty(refreshToken))
                 throw new InvalidClientRequestException("RefreshToken is required");*/
             
-            var response = userService.RefreshToken(refreshToken, GetIpAddress(contextAccessor.HttpContext));
+            var response = userService.RefreshToken(refreshToken, resolverContext.GetIpAddress(contextAccessor.HttpContext));
 
-            SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
+            resolverContext.SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
 
             return response;
         }
 
         [Authorize]
         public string RevokeToken(
+            IResolverContext resolverContext,
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
             RevokeTokenRequest model)
@@ -61,33 +65,11 @@ namespace CapstoneProject.Schema.Mutations
             var token = model.Token ?? contextAccessor.HttpContext?.Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                throw new InvalidClientRequestException("Token is required");
+                throw new InvalidOperationException("Token is required");
 
-            userService.RevokeToken(token, GetIpAddress(contextAccessor.HttpContext));
+            userService.RevokeToken(token, resolverContext.GetIpAddress(contextAccessor.HttpContext));
 
             return "Revoked";
-        }
-        
-        private void SetTokenCookie(HttpContext? context, string token)
-        {
-            if (context == null)
-                throw new InvalidClientRequestException("HttpContext was null");
-            
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
-            };
-            context.Response.Cookies.Append("refreshToken", token, cookieOptions);
-        }
-        
-        private string GetIpAddress(HttpContext? context)
-        {
-            if (context == null)
-                throw new InvalidClientRequestException("HttpContext was null");
-            if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
-                return context.Request.Headers["X-Forwarded-For"];
-            return context.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "";
         }
     }
 }
