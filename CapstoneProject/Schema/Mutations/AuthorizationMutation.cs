@@ -42,11 +42,6 @@ namespace CapstoneProject.Schema.Mutations
             [Service]IUserService userService,
             string refreshToken)
         {
-            //var refreshToken = contextAccessor.HttpContext?.Request.Cookies["refreshToken"];
-            
-            /*if (string.IsNullOrEmpty(refreshToken))
-                throw new InvalidClientRequestException("RefreshToken is required");*/
-            
             var response = userService.RefreshToken(refreshToken, resolverContext.GetIpAddress(contextAccessor.HttpContext));
 
             resolverContext.SetTokenCookie(contextAccessor.HttpContext, response.RefreshToken);
@@ -59,15 +54,9 @@ namespace CapstoneProject.Schema.Mutations
             IResolverContext resolverContext,
             [Service]IHttpContextAccessor contextAccessor,
             [Service]IUserService userService,
-            RevokeTokenRequest model)
+            string refreshToken)
         {
-            // accept token from request body or cookie
-            var token = model.Token ?? contextAccessor.HttpContext?.Request.Cookies["refreshToken"];
-
-            if (string.IsNullOrEmpty(token))
-                throw new InvalidOperationException("Token is required");
-
-            userService.RevokeToken(token, resolverContext.GetIpAddress(contextAccessor.HttpContext));
+            userService.RevokeToken(refreshToken, resolverContext.GetIpAddress(contextAccessor.HttpContext));
 
             return "Revoked";
         }

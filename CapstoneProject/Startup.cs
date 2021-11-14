@@ -63,6 +63,8 @@ namespace CapstoneProject
                 .AddAuthorization()
                 .AddErrorFilter<SimpleErrorFilter>();
 
+            services.AddHttpResultSerializer<StatusCodeHttpResultSerializer>();
+
             services.AddHttpContextAccessor();
             
             services.AddDbContext<DataContext>(options => 
