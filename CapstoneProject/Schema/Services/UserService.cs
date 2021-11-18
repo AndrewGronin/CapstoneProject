@@ -73,13 +73,11 @@ namespace CapstoneProject.Schema.Services
         {
             var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
             
-            // return null if no user found with token
             if (user == null) 
                 throw new RefreshTokenException("No Refresh token found");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
-            // return null if token is no longer active
             if (!refreshToken.IsActive) 
                 throw new RefreshTokenException("Token isnot active");
 

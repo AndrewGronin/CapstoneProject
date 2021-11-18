@@ -6,7 +6,6 @@ namespace CapstoneProject.Schema.Mutations
     {
         public string JwtToken { get; set; }
 
-        [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
         public AuthenticateResponse(string jwtToken, string refreshToken)
