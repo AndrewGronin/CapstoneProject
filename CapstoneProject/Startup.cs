@@ -4,6 +4,7 @@ using CapstoneProject.Infrastructure;
 using CapstoneProject.Model;
 using CapstoneProject.Schema.Mutations;
 using CapstoneProject.Schema.Queries;
+using CapstoneProject.Schema.Queries.Services;
 using CapstoneProject.Schema.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -59,6 +60,7 @@ namespace CapstoneProject
                 .AddQueryType<RootQuery>()
                 .AddMutationType<RootMutation>()
                 .AddTypeExtension<UsersQuery>()
+                .AddTypeExtension<WarehouseQuery>()
                 .AddTypeExtension<AuthorizationMutation>()
                 .AddAuthorization()
                 .AddErrorFilter<SimpleErrorFilter>();
@@ -75,6 +77,7 @@ namespace CapstoneProject
             
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<WarehouseQueryService>();
             services.AddCors();
         }
 
