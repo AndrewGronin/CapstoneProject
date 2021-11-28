@@ -4,13 +4,14 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using CapstoneProject.Model;
+using CapstoneProject.Model.Entities;
 using CapstoneProject.Model.Exceptions;
 
 namespace CapstoneProject.Schema.Queries.Services
 {
     public class WarehouseQueryService
     {
-        private DataContext _context;
+        private readonly DataContext _context;
 
         public WarehouseQueryService(DataContext context)
         {

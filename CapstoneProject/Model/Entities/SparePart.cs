@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CapstoneProject
 {
-    public partial class SparePart
+    public class SparePart
     {
         public SparePart()
         {

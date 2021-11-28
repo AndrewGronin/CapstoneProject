@@ -130,6 +130,8 @@ namespace CapstoneProject.Model
                     .IsClustered(false);
 
                 entity.Property(e => e.IssueDate).HasColumnType("datetime");
+                entity.Property(e => e.CreationDate).HasColumnType("datetime");
+
 
                 entity.HasOne(d => d.Request)
                     .WithMany(p => p.SparePartApplications)
