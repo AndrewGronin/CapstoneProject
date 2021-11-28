@@ -28,8 +28,9 @@ namespace CapstoneProject.Schema.Queries.Services
                 .Select(ret => ret.TypeId);
 
             var filtered = _context.SparePartApplications
-                .Where(a => typeIds.Concat(responsibleEmployeesTypeIds).Contains(a.SparePart.TypeId))
-                .Where(a => manufacturers.Contains(a.SparePart.Manufacturer));
+                .Where(a => (typeIds.Any() || responsibleEmployeeIds.Any()) ?
+                    typeIds.Concat(responsibleEmployeesTypeIds).Contains(a.SparePart.TypeId) : true)
+                .Where(a => manufacturers.Any() ? manufacturers.Contains(a.SparePart.Manufacturer) : true);
 
             return filtered;
         }
@@ -67,7 +68,8 @@ namespace CapstoneProject.Schema.Queries.Services
                     IssuingDateTime = a.IssueDate ?? DateTime.MinValue,
                     IssuedTo = a.IssuedTo
                 }
-                );
+                )
+                .ToArray();
                 //TODO КИдать ошибку и возвращать корректные данные
                 if (sparePartsIssueList.Any(spi => spi.IssuedTo == null || spi.IssuingDateTime == DateTime.MinValue))
                     throw new DataException("Issued Application doesn't contain issuing data");
@@ -78,8 +80,8 @@ namespace CapstoneProject.Schema.Queries.Services
             IEnumerable<IssuingDepartment> departments,
             IEnumerable<int> typeIds,
             IEnumerable<int> responsibleEmployeeIds,
-            DateTime lowerDatetimeBorder,
-            DateTime upperDateTimeBorder,
+            DateTime? lowerDatetimeBorder,
+            DateTime? upperDateTimeBorder,
             IEnumerable<PaymentMethod> paymentMethods)
         {
             if (lowerDatetimeBorder > upperDateTimeBorder)
@@ -90,12 +92,15 @@ namespace CapstoneProject.Schema.Queries.Services
                 .Select(ret => ret.TypeId);
 
             var filteredByOwnedFields = _context.PartRequests
-                .Where(pr => departments.Contains(pr.IssuingDepartment))
-                .Where(pr => paymentMethods.Contains(pr.PaymentMethod))
-                .Where(pr => pr.DueDate >= lowerDatetimeBorder && pr.DueDate <= upperDateTimeBorder)
+                .Where(pr => pr.SparePartApplications.Any(a => a.Issued == null))
+                .Where(pr => departments.Any() ? departments.Contains(pr.IssuingDepartment) : true)
+                .Where(pr => paymentMethods.Any() ? paymentMethods.Contains(pr.PaymentMethod) : true)
+                .Where(pr => (lowerDatetimeBorder == null || pr.DueDate >= lowerDatetimeBorder)
+                             && (upperDateTimeBorder == null || pr.DueDate <= upperDateTimeBorder))
                 .Where(pr => 
                     pr.SparePartApplications
-                        .Any(a => typeIds.Concat(responsibleEmployeesTypeIds).Contains(a.SparePart.TypeId)));
+                        .Any(a => (typeIds.Any() || responsibleEmployeeIds.Any()) ?
+                            typeIds.Concat(responsibleEmployeesTypeIds).Contains(a.SparePart.TypeId) : true));
 
             return filteredByOwnedFields;
         }

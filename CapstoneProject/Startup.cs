@@ -3,6 +3,7 @@ using System.Text;
 using CapstoneProject.Infrastructure;
 using CapstoneProject.Model;
 using CapstoneProject.Schema.Mutations;
+using CapstoneProject.Schema.Mutations.Services;
 using CapstoneProject.Schema.Queries;
 using CapstoneProject.Schema.Queries.Services;
 using CapstoneProject.Schema.Services;
@@ -62,6 +63,7 @@ namespace CapstoneProject
                 .AddTypeExtension<UsersQuery>()
                 .AddTypeExtension<WarehouseQuery>()
                 .AddTypeExtension<AuthorizationMutation>()
+                .AddTypeExtension<WarehouseMutation>()
                 .AddAuthorization()
                 .AddErrorFilter<SimpleErrorFilter>();
 
@@ -78,6 +80,7 @@ namespace CapstoneProject
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<WarehouseQueryService>();
+            services.AddScoped<WarehouseMutationService>();
             services.AddCors();
         }
 
